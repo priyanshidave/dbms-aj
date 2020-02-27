@@ -1,0 +1,185 @@
+MongoDB Enterprise > db.stats()
+{
+        "db" : "test",
+        "collections" : 0,
+        "views" : 0,
+        "objects" : 0,
+        "avgObjSize" : 0,
+        "dataSize" : 0,
+        "storageSize" : 0,
+        "numExtents" : 0,
+        "indexes" : 0,
+        "indexSize" : 0,
+        "scaleFactor" : 1,
+        "fileSize" : 0,
+        "fsUsedSize" : 0,
+        "fsTotalSize" : 0,
+        "ok" : 1
+}
+MongoDB Enterprise > db.help()
+DB methods:
+        db.adminCommand(nameOrDocument) - switches to 'admin' db, and runs command [just calls db.runCommand(...)]
+        db.aggregate([pipeline], {options}) - performs a collectionless aggregation on this database; returns a cursor
+        db.auth(username, password)
+        db.cloneDatabase(fromhost) - will only function with MongoDB 4.0 and below
+        db.commandHelp(name) returns the help for the command
+        db.copyDatabase(fromdb, todb, fromhost) - will only function with MongoDB 4.0 and below
+        db.createCollection(name, {size: ..., capped: ..., max: ...})
+        db.createUser(userDocument)
+        db.createView(name, viewOn, [{$operator: {...}}, ...], {viewOptions})
+        db.currentOp() displays currently executing operations in the db
+        db.dropDatabase(writeConcern)
+        db.dropUser(username)
+        db.eval() - deprecated
+        db.fsyncLock() flush data to disk and lock server for backups
+        db.fsyncUnlock() unlocks server following a db.fsyncLock()
+        db.getCollection(cname) same as db['cname'] or db.cname
+        db.getCollectionInfos([filter]) - returns a list that contains the names and options of the db's collections
+        db.getCollectionNames()
+        db.getLastError() - just returns the err msg string
+        db.getLastErrorObj() - return full status object
+        db.getLogComponents()
+        db.getMongo() get the server connection object
+        db.getMongo().setSlaveOk() allow queries on a replication slave server
+        db.getName()
+        db.getProfilingLevel() - deprecated
+        db.getProfilingStatus() - returns if profiling is on and slow threshold
+        db.getReplicationInfo()
+        db.getSiblingDB(name) get the db at the same server as this one
+        db.getWriteConcern() - returns the write concern used for any operations on this db, inherited from server object if set
+        db.hostInfo() get details about the server's host
+        db.isMaster() check replica primary status
+        db.killOp(opid) kills the current operation in the db
+        db.listCommands() lists all the db commands
+        db.loadServerScripts() loads all the scripts in db.system.js
+        db.logout()
+        db.printCollectionStats()
+        db.printReplicationInfo()
+        db.printShardingStatus()
+        db.printSlaveReplicationInfo()
+        db.resetError()
+        db.runCommand(cmdObj) run a database command.  if cmdObj is a string, turns it into {cmdObj: 1}
+        db.serverStatus()
+        db.setLogLevel(level,<component>)
+        db.setProfilingLevel(level,slowms) 0=off 1=slow 2=all
+        db.setVerboseShell(flag) display extra information in shell output
+        db.setWriteConcern(<write concern doc>) - sets the write concern for writes to the db
+        db.shutdownServer()
+        db.stats()
+        db.unsetWriteConcern(<write concern doc>) - unsets the write concern for writes to the db
+        db.version() current version of the server
+        db.watch() - opens a change stream cursor for a database to report on all  changes to its non-system collections.
+MongoDB Enterprise > show dbs
+admin   0.000GB
+config  0.000GB
+local   0.000GB
+MongoDB Enterprise > use firstdb
+switched to db firstdb
+MongoDB Enterprise > show dbs
+admin   0.000GB
+config  0.000GB
+local   0.000GB
+MongoDB Enterprise > db.createColleation("firstcon");
+2020-02-03T21:15:42.776-0700 E  QUERY    [js] uncaught exception: TypeError: db.createColleation is not a function :
+@(shell):1:1
+MongoDB Enterprise > db.createColleaction("firstcon");
+2020-02-03T21:16:07.192-0700 E  QUERY    [js] uncaught exception: TypeError: db.createColleaction is not a function :
+@(shell):1:1
+MongoDB Enterprise > db.createCollection("firstcon");
+{ "ok" : 1 }
+MongoDB Enterprise > show dbs
+admin    0.000GB
+config   0.000GB
+firstdb  0.000GB
+local    0.000GB
+MongoDB Enterprise > show collection
+2020-02-03T21:17:04.736-0700 E  QUERY    [js] uncaught exception: Error: don't know how to show [collection] :
+shellHelper.show@src/mongo/shell/utils.js:1139:11
+shellHelper@src/mongo/shell/utils.js:790:15
+@(shellhelp2):1:1
+MongoDB Enterprise > show collections
+firstcon
+MongoDB Enterprise > db.firstcon.insert({"name":"yash","salary":25000});
+WriteResult({ "nInserted" : 1 })
+MongoDB Enterprise > db.firstcon.insert({"name":"poojan","salary":27000});
+WriteResult({ "nInserted" : 1 })
+MongoDB Enterprise > db.firstcon.insert({"name":"rochn","salary":29000});
+WriteResult({ "nInserted" : 1 })
+MongoDB Enterprise > db.firstcon.find
+function(query, fields, limit, skip, batchSize, options) {
+    var cursor = new DBQuery(this._mongo,
+                             this._db,
+                             this,
+                             this._fullName,
+                             this._massageObject(query),
+                             fields,
+                             limit,
+                             skip,
+                             batchSize,
+                             options || this.getQueryOptions());
+
+    {
+        const session = this.getDB().getSession();
+
+        const readPreference = session._getSessionAwareClient().getReadPreference(session);
+        if (readPreference !== null) {
+            cursor.readPref(readPreference.mode, readPreference.tags);
+        }
+
+        const readConcern = session._getSessionAwareClient().getReadConcern(session);
+        if (readConcern !== null) {
+            cursor.readConcern(readConcern.level);
+        }
+    }
+
+    return cursor;
+}
+MongoDB Enterprise > db.firstcon.find()
+{ "_id" : ObjectId("5e38f0b21580dc99aacda7f6"), "name" : "yash", "salary" : 25000 }
+{ "_id" : ObjectId("5e38f0ce1580dc99aacda7f7"), "name" : "poojan", "salary" : 27000 }
+{ "_id" : ObjectId("5e38f0e71580dc99aacda7f8"), "name" : "rochn", "salary" : 29000 }
+MongoDB Enterprise > db.firstcon.find()limit(1)
+2020-02-03T21:25:26.753-0700 E  QUERY    [js] uncaught exception: SyntaxError: unexpected token: identifier :
+@(shell):1:18
+MongoDB Enterprise > db.firstcon.find()limit(1);
+2020-02-03T21:25:31.609-0700 E  QUERY    [js] uncaught exception: SyntaxError: unexpected token: identifier :
+@(shell):1:18
+MongoDB Enterprise > db.firstcon.find().limit(1);
+{ "_id" : ObjectId("5e38f0b21580dc99aacda7f6"), "name" : "yash", "salary" : 25000 }
+MongoDB Enterprise > db.firstcon.find().limit(1).skip(1)
+{ "_id" : ObjectId("5e38f0ce1580dc99aacda7f7"), "name" : "poojan", "salary" : 27000 }
+MongoDB Enterprise > db.firstcon.find().limit(1).skip(2)
+{ "_id" : ObjectId("5e38f0e71580dc99aacda7f8"), "name" : "rochn", "salary" : 29000 }
+MongoDB Enterprise > db.firstcon.find({"name":"yash"});
+{ "_id" : ObjectId("5e38f0b21580dc99aacda7f6"), "name" : "yash", "salary" : 25000 }
+MongoDB Enterprise > db.firstcon.find({"salary":"27000});
+2020-02-03T21:27:44.545-0700 E  QUERY    [js] uncaught exception: SyntaxError: "" literal not terminated before end of script :
+@(shell):1:36
+MongoDB Enterprise > db.firstcon.find({"salary":27000});
+{ "_id" : ObjectId("5e38f0ce1580dc99aacda7f7"), "name" : "poojan", "salary" : 27000 }
+MongoDB Enterprise > db.createCollection("book");
+{ "ok" : 1 }
+MongoDB Enterprise > show dbs
+admin    0.000GB
+config   0.000GB
+firstdb  0.000GB
+local    0.000GB
+MongoDB Enterprise > show collections
+book                 db.firstcon.insert({"id":101,"title":"adbms","author":"johan","publisher":"navneet","pub_year":1999});
+WriteResult({ "nInserted" : 1 }).insert({"id":101,"title":"adbms","author":"johan","publisher":"navneet","pub_year":1999});
+MongoDB Enterprise > db.firstcon.insert({"id":101,"title":"adbms","author":"johan","publisher":"navneet","pub_year":1999});
+MongoDB Enterprise > db.firstcon.insert({"id":102,"title":"aj","author":"bhavesh","publisher":"raj","pub_year":1997});
+WriteResult({ "nInserted" : 1 })
+MongoDB Enterprise > db.firstcon.insert({"id":103,"title":"c_programing","author":"bala","publisher":"vikas","pub_year":2015});
+WriteResult({ "nInserted" : 1 })
+MongoDB Enterprise > db.firstcon.insert({"id":103,"title":"c_programing","author":"bala","publisher":"vikas","pub_year":2015});
+WriteResult({ "nInserted" : 1 })
+MongoDB Enterprise > db.firstcon.insert({"id":104,"title":"php","author":"sharma","publisher":"bhavik","pub_year":2002});
+WriteResult({ "nInserted" : 1 })
+MongoDB Enterprise > db.firstcon.insert({"id":105,"title":"apt","author":"sunilsingh","publisher":"thm","pub_year":2006});
+WriteResult({ "nInserted" : 1 })
+MongoDB Enterprise > db.firstcon.insert({"id":106,"title":"dm","author":"rebert","publisher":"sangath","pub_year":2020});
+WriteResult({ "nInserted" : 1 })
+MongoDB Enterprise > db.firstcon.insert({"id":107,"title":"cpp","author":"nirav","publisher":"darpan","pub_year":2013});
+WriteResult({ "nInserted" : 1 })
+MongoDB Enterprise > db.firstcon.insert({"id":108,"title":"","author":"nirav","publisher":"darpan","pub_year":2013});
